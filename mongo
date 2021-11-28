@@ -1,0 +1,113 @@
+* Start 
+
+use Movies
+
+* document 1
+
+db.Info.save({Titulo: 'Rapidos y Furiosos 9', Director: 'Justin Li', Año: '2021', Actores: ["Vin Diesel","Michelle Rodriguez","Tyrese Gibson","John Cena"], Pais: 'Estados Unidos de America'})
+
+* document 2
+
+db.Info.save({Titulo: 'Fast Five', Director: 'Justin Li', Año: '2011', Actores: ["Toretto","Michelle Rodriguez","Poul Walker"], Pais: 'Estados Unidos de America'})
+
+* document 3
+
+db.Info.save({Titulo: 'Transformers 1', Director: 'Michael Bay', Año: '2007', Actores: 
+["Shia LaBeouf","Tyrese Gibson","Josh Duhamel", "Anthony Anderson", "Megan Fox"], Pais: 'Estados Unidos de America'})
+
+* document 4 
+
+db.Info.save({Titulo: 'The Notebook', Director: 'Nick Cassavetes', Año: '2004', Actores: ["Ryan Gosling","Rachel McAdams","James Garner", "Gena Rowlands"], Pais: 'Estados Unidos de America'})
+
+* document 5
+
+db.Info.save({Titulo: 'Bajo la misma estrella', Director: 'Josh Boone', Año: '2014', Actores: ["Shailene Woodley","Ansel Elgort","Laura Dern"], Pais: 'Estados Unidos de America'})
+
+* document 6
+
+db.Info.save({Titulo: 'Titanic', Director: 'James Cameron', Año: '1998', Actores: ["Leonardo DiCaprio","Kate Winslet","Billy Zane", "Kathy Bates"], Pais: 'Estados Unidos de America'})
+
+* document 7
+
+db.Info.save({Titulo: 'Truman', Director: 'Gesc Gay', Año: '2015', Actores: ["Ricardo Darín","Javier Cámara","Dolores Fonzi", "Eduard Fernández"], Pais: 'España'})
+
+* document 8 
+
+db.Info.save({Titulo: 'Fast and Fourios', Director: 'Justin Li', Año: '2014', Actores: ["Toretto","Michelle Rodriguez","Poul Walker"], Pais: 'Estados Unidos de America'})
+
+
+a) Obtener y mostrar todos los documentos
+
+db.Info.find().pretty()
+
+b) Mostrar los documentos cuyo nombre del director inicie con la letra “G”.
+
+db.Info.find({Director: /^G/})   LIKE 'G%'
+
+c) Mostrar los documentos con actores que incluyan el nombre “Toretto”.
+
+db.Info.find({Actores: /Toretto/})
+
+d) Mostrar todas las películas cuyo año de producción está entre 1998 y 2018.
+
+db.Info.find({
+    Año: {
+        $gte:"1998",
+        $lt: "2018"
+    }
+}).pretty()
+
+e) Agregar y mostrar una nueva tupla (clave:valor) llamada “Resumen”.
+
+db.Info.update({}, {$set: {"Resumen": "Add Personal Resumen"}}, {upsert:false, multi:true})
+
+f) Realizar y mostrar la modificación de al menos 2 actores.
+
+db.Info.update(
+    {Actores:"Poul Walker"},
+    {$set:{"Actores.$":"Pablo Walker"}}) 
+
+
+//Con este codigo Actualizamos el nombre Poul Walker del primer
+//Document que encuentre con ese nombre y lo crea en Pablo Walker :)
+
+db.Info.update(
+    {Actores:"Rachel McAdams"},
+    {$set:{"Actores.$":"Rachel Adam"}}) 
+    
+    
+g) Mostrar las películas cuyo resumen contenga la frase “Carros”.
+
+//Update 2 documentos
+
+db.Info.update({"Titulo" : "Fast and Fourios"},{$set: {"Resumen": "Pelicula de Carros y Policias"}})
+
+db.Info.update({"Titulo" : "Truman"},{$set: {"Resumen": "La Historia de 2 policias que van en sus Carros teniendo aventuras"}})
+
+db.Info.find({Resumen: /Carros/})
+
+
+
+h) Mostrar las películas cuyo resumen contenga la frase “ciudad” y “armas”.
+
+//Update 2 documentos
+db.Info.update({"Titulo" : "Titanic"},{$set: {"Resumen": "Este es la historia del mitico titanic el cual era el viaje de inahuracion de la ciudad de londres a new york"}})
+
+db.Info.update({"Titulo" : "Transformers 1"},{$set: {"Resumen": "Este es una pelicula de ciencia ficcion donde los alien toman las armas en la ciudad de new york"}})
+
+
+db.Info.find({
+  $or: [
+    {
+      Resumen: /ciudad/
+    },
+    {
+      Resumen: /armas/
+    }
+  ]
+}).pretty()
+
+i) Eliminar una película.
+
+db.Info.deleteOne({"Titulo" : "Fast and Fourios"})
+
